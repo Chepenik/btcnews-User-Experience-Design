@@ -17,6 +17,7 @@
     
     .slider-container {
       padding: 3px;
+      position: relative; /* Added position relative */
     }
     
     .slider-track {
@@ -53,7 +54,7 @@
 
     .slider-value {
       position: absolute;
-      left: calc(var(--slider-value) / 100 * (100% - 4px) + 4px);
+      left: calc(var(--slider-value) / 100 * (100% - 4px) + 4px + 24px); /* Updated left position */
       top: -30px;
       font-size: 14px;
       color: white;
@@ -66,6 +67,16 @@
       border: 1px solid rgb(47, 0, 100);
       border-radius: 4px;
       background-color: white;
+    }
+    
+    .slider-value-static {
+      position: absolute;
+      left: calc(100% + 10px); /* Adjust position as needed */
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: white;
+      z-index: 1;
     }
     
     .slider-input {
@@ -107,40 +118,37 @@
   </style>
 </head>
 <body>
-    <div class="slider-wrapper">
-      <div class="slider-container">
-        <div class="slider-track">
-          <div class="slider-track-fill"></div>
-          <div class="slider-thumb">
-            <i class="fab fa-bitcoin" style="color: #ff000d;"></i>
-          </div>
-          <input class="slider-input" type="range" min="0" max="100" step="1" value="0">
+  <div class="slider-wrapper">
+    <div class="slider-container">
+      <div class="slider-track">
+        <div class="slider-track-fill"></div>
+        <div class="slider-thumb">
+          <i class="fab fa-bitcoin" style="color: #ff000d;"></i>
         </div>
-        <div class="slider-value">
-          <div class="slider-value-box">0 sats</div>
-        </div>
+        <input class="slider-input" type="range" min="0" max="100" step="1" value="0">
       </div>
+      <div id="slider-display" class="slider-value slider-value-static">0 sats</div> <!-- Updated class and added slider-value-static class -->
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-    <script>
-      const sliderContainers = document.querySelectorAll('.slider-container');
-  
-      sliderContainers.forEach(sliderContainer => {
-        const sliderInput = sliderContainer.querySelector('.slider-input');
-        const sliderValue = sliderContainer.querySelector('.slider-value');
-  
-        const updateSlider = () => {
-          const value = +sliderInput.value;
-          const sats = value * 21;
-          sliderContainer.style.setProperty('--slider-value', 100 * value / 100);
-          sliderValue.querySelector('.slider-value-box').textContent = sats + ' sats';
-          console.log(sats);
-        };
-  
-        sliderInput.addEventListener('input', updateSlider);
-  
-        updateSlider();
-      });
-    </script>
-  </body>
-  </html>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+  <script>
+    const sliderContainers = document.querySelectorAll('.slider-container');
+    const sliderDisplay = document.getElementById('slider-display');
+
+    sliderContainers.forEach(sliderContainer => {
+      const sliderInput = sliderContainer.querySelector('.slider-input');
+      
+      const updateSlider = () => {
+        const value = +sliderInput.value;
+        const sats = value * 21;
+        sliderContainer.style.setProperty('--slider-value', 100 * value / 100);
+        sliderDisplay.textContent = sats + ' sats';
+      };
+
+      sliderInput.addEventListener('input', updateSlider);
+
+      updateSlider();
+    });
+  </script>
+</body>
+</html>
