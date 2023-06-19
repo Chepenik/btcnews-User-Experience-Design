@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bitcoin News</title>
+	<style>
+		/*Default Style Page*/
+		/*Marquee style*/
+		.red {
+			color: red;
+		}
+
+		.green {
+			color: green;
+		}
+
+		.marquee {
+			background: #e2e2e2;
+			position: relative;
+			width: 100%;
+			overflow: hidden;
+			padding: 0;
+		}
+
+		.marquee .scroll {
+			width: 100%;
+			display: flex;
+		}
+
+		.marquee .scroll div {
+			height: 36px;
+			color: #FF1616;
+			font-size: 18px;
+			background: #e2e2e2;
+			white-space: nowrap;
+			font-weight: 500;
+			animation: animate-marquee 80s linear infinite;
+			animation-delay: -40s;
+		}
+
+		.marquee .scroll div:nth-child(2) {
+			animation: animate-marquee-2 50s linear infinite;
+			animation-delay: -80s;
+		}
+
+		.marquee .scroll div .category {
+			/*padding: 0px 10px;*/
+		}
+
+		.category {
+			padding: 0 10px;
+			color: #FF1616;
+			font-size: 16px;
+			font-weight: 600!important;
+			clear: both;
+			display: inline-block;
+			overflow: hidden;
+			white-space: nowrap;
+			line-height: 20px;
+			font-family: sans-serif;
+		}
+
+		/*Responsive marquee*/
+		@media (max-width:767px) {
+			.category {
+				font-size: 16px;
+			}
+
+			.marquee .scroll div {
+				font-size: 16px;
+			}
+		}
+
+		@keyframes animate-marquee {
+			0% {
+				-moz-transform: translateX(100%);
+				-webkit-transform: translateX(100%);
+				transform: translateX(100%);
+			}
+
+			100% {
+				-moz-transform: translateX(-100%);
+				-webkit-transform: translateX(-100%);
+				transform: translateX(-100%);
+			}
+		}
+
+		@keyframes animate-marquee-2 {
+			0% {
+				-moz-transform: translateX(0%);
+				-webkit-transform: translateX(0%);
+				transform: translateX(0%);
+			}
+
+			100% {
+				-moz-transform: translateX(-200%);
+				-webkit-transform: translateX(-200%);
+				transform: translateX(-200%);
+			}
+		}
+	</style>
+</head>
+<body>
+	<section class="marquee">
+		<div class="scroll">
+			<div>
+				<h3 class="category">Breaking Bitcoin News</h3>
+				<h3 class="category" id="price1"></h3>
+				<h3 class="category" id="block1"></h3>
+				<h3 class="category" id="fees1"></h3>
+				<h3 id="change1" class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+			</div>
+			<!--Second equal div to ensure continuity of marquee-->
+			<div>
+				<h3 class="category">Breaking Bitcoin News</h3>
+				<h3 class="category" id="price2"></h3>
+				<h3 class="category" id="block2"></h3>
+				<h3 class="category" id="fees2"></h3>
+				<h3 id="change2" class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+				<h3 class="category"></h3>
+			</div>
+		</div>
+	</section>
+
+	<section id="test" style="margin-top: 24px">
+		<!-- Crypto Converter ⚡ Widget -->
+		<crypto-converter-widget shadow symbol live background-color="#FF1616" border-radius="0.60rem" fiat="united-states-dollar" crypto="bitcoin" amount="1" decimal-places="7"></crypto-converter-widget>
+		<script async src="https://cdn.jsdelivr.net/gh/dejurin/crypto-converter-widget@1.5.2/dist/latest.min.js"></script>
+		<!-- /Crypto Converter ⚡ Widget -->
+	</section>
+
+	<script>
+		var price2 = document.querySelector("#price2");
+		var price1 = document.querySelector("#price1");
+
+		function getPrice() {
+			var price = "https://api.bitaps.com/market/v1/ticker/btcusd";
+
+			fetch(price)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					price1.textContent = "USD/BTC $" + data.data.last;
+					price2.textContent = "USD/BTC $" + data.data.last;
+				});
+		}
+
+		getPrice();
+
+		var block1 = document.querySelector("#block1");
+		var block2 = document.querySelector("#block2");
+
+		function getBlock() {
+			var block = "https://api.bitaps.com/btc/v1/blockchain/block/last";
+
+			fetch(block)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					block1.textContent = "Block Time: " + data.data.height;
+					block2.textContent = "Block Time: " + data.data.height;
+				});
+		}
+
+		getBlock();
+
+		var feeblock1 = document.querySelector("#fees1");
+		var feeblock2 = document.querySelector("#fees2");
+
+		function getFees() {
+			var fees = "https://mempool.space/api/v1/fees/recommended";
+
+			fetch(fees)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					feeblock1.innerHTML = `Current Fees: ${data.fastestFee} sat/vb`;
+					feeblock2.textContent = `Current Fees: ${data.fastestFee} sat/vb`;
+				});
+		}
+
+		getFees();
+
+		var change1 = document.querySelector("#change1");
+		var change2 = document.querySelector("#change2");
+
+		function getMoreData() {
+			var url = "https://api.coincap.io/v2/assets/bitcoin";
+
+			fetch(url)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					let test = data.data.changePercent24Hr;
+					change1.innerHTML = `24hr Change: ${(data.data.changePercent24Hr) * 1000}%`;
+					change2.textContent = `24hr Change: ${data.data.changePercent24Hr} %`;
+				});
+		}
+
+		getMoreData();
+	</script>
+</body>
+</html>
