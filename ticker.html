@@ -108,12 +108,8 @@
 				<h3 class="category" id="block1"></h3>
 				<h3 class="category" id="fees1"></h3>
 				<h3 id="change1" class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
+				<h3 class="category" id="btc"></h3>
+				<h3 class="category" id="hash-rate"></h3>
 			</div>
 			<!--Second equal div to ensure continuity of marquee-->
 			<div>
@@ -122,11 +118,16 @@
 				<h3 class="category" id="block2"></h3>
 				<h3 class="category" id="fees2"></h3>
 				<h3 id="change2" class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
-				<h3 class="category"></h3>
+				<h3 class="category" id="btc"></h3>
+				<h3 class="category" id="btc-dominance"></h3>
+				<h3 class="category" id="hash-rate"></h3>
+				<h3 class="category" id="lightning-nodes"></h3>
+				<h3 class="category" id="lightning-capacity"></h3>
+				<h3 class="category" id="cleanSpark"></h3>
+				<h3 class="category" id="riot"></h3>
+				<h3 class="category" id="hut8"></h3>
+				<h3 class="category" id="bitcoin-addresses"></h3>
+				<h3 class="category" id="miner-fees"></h3>
 			</div>
 		</div>
 	</section>
@@ -204,13 +205,121 @@
 					return response.json();
 				})
 				.then(function (data) {
-					let test = data.data.changePercent24Hr;
 					change1.innerHTML = `24hr Change: ${(data.data.changePercent24Hr) * 1000}%`;
 					change2.textContent = `24hr Change: ${data.data.changePercent24Hr} %`;
 				});
 		}
 
 		getMoreData();
+
+		// Additional Functions
+
+		var btc = document.querySelector("#btc");
+		var btcDominance = document.querySelector("#btc-dominance");
+		var hashRate = document.querySelector("#hash-rate");
+		var lightningNodes = document.querySelector("#lightning-nodes");
+		var lightningCapacity = document.querySelector("#lightning-capacity");
+		var cleanSpark = document.querySelector("#cleanSpark");
+		var riot = document.querySelector("#riot");
+		var hut8 = document.querySelector("#hut8");
+		var bitcoinAddresses = document.querySelector("#bitcoin-addresses");
+		var minerFees = document.querySelector("#miner-fees");
+
+		function getAdditionalData() {
+			// Fetch BTC data
+			var btcData = "https://api.coincap.io/v2/assets/bitcoin";
+
+			fetch(btcData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					btc.textContent = "BTC Price: $" + data.data.priceUsd;
+				});
+
+			// Fetch Hash Rate
+			var hashRateData = "https://api.blockchain.info/q/hashrate";
+
+			fetch(hashRateData)
+				.then(function (response) {
+					return response.text();
+				})
+				.then(function (data) {
+					hashRate.textContent = "Hash Rate: " + data + " GH/s";
+				});
+
+			// Fetch Lightning Network data
+			var lightningData = "https://lnmainnet.gaben.win/v1/nodes";
+
+			fetch(lightningData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					lightningNodes.textContent = "Number of Lightning Nodes: " + data.count;
+					lightningCapacity.textContent = "Lightning Capacity: " + data.capacity + " BTC";
+				});
+
+			// Fetch CleanSpark stock price
+			var cleanSparkData = "https://api.iextrading.com/1.0/stock/CLSK/quote";
+
+			fetch(cleanSparkData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					cleanSpark.textContent = "CleanSpark Stock Price: $" + data.latestPrice;
+				});
+
+			// Fetch Riot Blockchain stock price
+			var riotData = "https://api.iextrading.com/1.0/stock/RIOT/quote";
+
+			fetch(riotData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					riot.textContent = "Riot Blockchain Stock Price: $" + data.latestPrice;
+				});
+
+			// Fetch Hut 8 Mining stock price
+			var hut8Data = "https://api.iextrading.com/1.0/stock/HUTMF/quote";
+
+			fetch(hut8Data)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					hut8.textContent = "Hut 8 Mining Stock Price: $" + data.latestPrice;
+				});
+
+			// Fetch Bitcoin number of addresses
+			var bitcoinAddressData = "https://api.blockchain.info/charts/n-unique-addresses?format=json";
+
+			fetch(bitcoinAddressData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					var addresses = data.values[data.values.length - 1].y;
+					bitcoinAddresses.textContent = "Bitcoin (# Addresses): " + addresses.toLocaleString();
+				});
+
+			// Fetch Bitcoin miner fees
+			var minerFeesData = "https://api.blockchain.info/charts/transaction-fees?format=json";
+
+			fetch(minerFeesData)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					var fees = data.values[data.values.length - 1].y;
+					minerFees.textContent = "Miner Fees: " + fees.toLocaleString() + " BTC";
+				});
+		}
+
+		getAdditionalData();
+		setInterval(getAdditionalData, 60000);
 	</script>
 </body>
 </html>
